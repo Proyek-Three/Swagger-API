@@ -4,97 +4,19 @@ info:
   version: 1.0.0
 servers:
   - url: https://bp-promosi-umkm-0fd00e17451e.herokuapp.com
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
 tags:
-  - name: Product
   - name: Auth
+  - name: Product
   - name: Category
-  - name: Store
   - name: Status
-  - name: Datausers
+  - name: Users
+  - name: Profile
 paths:
-  /insert/product:
-    post:
-      tags:
-        - Product
-      summary: Insert Product
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                product_name: Jus Alpukat
-                description: Minuman segar
-                image: >-
-                  https://dcostseafood.id/wp-content/uploads/2021/12/Jus-Alpukat.jpg
-                price: 15000
-                category:
-                  id: 6776bf9e30844cbcd9fa31b4
-                store:
-                  id: 6783aaae4613924a4ca8af94
-                status:
-                  id: 67811f31a6ffe1a1bca38c12
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
-  /product:
-    get:
-      tags:
-        - Product
-      summary: Get All Product
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
-  /product/677e98d1f4f1b96ad63df38d:
-    get:
-      tags:
-        - Product
-      summary: Get Product By ID
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
-  /update/product/677e98d1f4f1b96ad63df38d:
-    put:
-      tags:
-        - Product
-      summary: Update Product
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                product_name: Mie Shitman Extra Spicy
-                description: Mie super pedas
-                image: mie_spicy.jpg
-                price: 20000
-                category:
-                  id: 677658bff4f7b2763158fee9
-                store:
-                  id: 677e82c0f3fbbe5e9f752065
-                status:
-                  id: 67811f40a6ffe1a1bca38c13
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
-  /product/delete/677e515d4ddcb5ee2941224b:
-    delete:
-      tags:
-        - Product
-      summary: Delete Product
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
   /users/register:
     post:
       tags:
@@ -106,43 +28,174 @@ paths:
             schema:
               type: object
               example:
-                username: ghaidafasya24
+                name: Ghaida Fasya Yuthika
+                username: ghaidaa
                 password: ghaida123
-                email: ghaida@gmail.com
+                email: ghaidaa@gmail.com
+                phone_number: "081908915320"
+                store:
+                  store_name: Ghaida Store
+                  address: Jalan Cihanjuang No.1
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
-  /users:
-    get:
-      tags:
-        - Datausers
-      summary: Users
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
-  /insert/user:
+  /users/login:
     post:
       tags:
-        - Datausers
-      summary: Insert Data Users
+        - Auth
+      summary: Login
       requestBody:
         content:
           application/json:
             schema:
               type: object
               example:
-                - username: ghaidafasya
-                  password: ghaida12345
-                  phone_number: '6281908915320'
-                  email: ghaida@gmail.com
-                  store:
-                    id: 677e82c0f3fbbe5e9f752065
+                username: ghai
+                password: ghaida123
       responses:
-        '200':
+        "200":
+          description: Successful response
+          content:
+            application/json: {}
+  /insert/product:
+    post:
+      tags:
+        - Product
+      summary: Insert Product
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                user.id:
+                  type: string
+                  example: 678db51214a82ef8adbe67f7
+                ProductName:
+                  type: string
+                  example: Thai Tea
+                description:
+                  type: string
+                  example: Teh thailand
+                price:
+                  type: integer
+                  example: "15000"
+                status.id:
+                  type: string
+                  example: 67910940c6747400bebfe2cd
+                category.id:
+                  type: string
+                  example: 6776bf9e30844cbcd9fa31b4
+                image:
+                  type: string
+                  format: binary
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json: {}
+  /product:
+    get:
+      tags:
+      - Product
+      summary: Get All Product
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json: {}
+  /product/{id}:
+    get:
+      tags:
+        - Product
+      summary: Get Product By ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json: {}
+  /update/product/{id}:
+    put:
+      tags:
+        - Product
+      summary: Update Product
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                ProductName:
+                  type: string
+                  example: Thai Tea
+                description:
+                  type: string
+                  example: Teh khas thailand
+                image:
+                  type: string
+                  format: binary
+                price:
+                  type: integer
+                  example: "10000"
+                category.id:
+                  type: string
+                  example: 6776bf9e30844cbcd9fa31b4
+                user.id:
+                  type: string
+                  example: 678db51214a82ef8adbe67f7
+                status.id:
+                  type: string
+                  example: 67811f31a6ffe1a1bca38c12
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json: {}
+  /product/delete/{id}:
+    delete:
+      tags:
+        - Product
+      summary: Delete Product
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json: {}
+  /product-seller:
+    get:
+      tags:
+        - Product
+      summary: Get Product By User ID
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -152,7 +205,7 @@ paths:
         - Category
       summary: Get All Category
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -167,37 +220,55 @@ paths:
             schema:
               type: object
               example:
-                category_name: Drink
+                category_name: Food
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
-  /category/6776c1fe30844cbcd9fa31b6:
+  /category/{id}:
     get:
       tags:
         - Category
       summary: Get Category By ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
-  /category/delete/67768cee58c029547e7bd92d:
+  /category/delete/{id}:
     delete:
       tags:
         - Category
       summary: Delete Category
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
-  /update/category/677aa57c385e65dd663d47b2:
+  /update/category/{id}:
     put:
       tags:
         - Category
       summary: Update Category
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -206,73 +277,7 @@ paths:
               example:
                 category_name: Drink
       responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
-  /insert/store:
-    post:
-      tags:
-        - Store
-      summary: Insert Store
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                store_name: Mie Gacoan
-                address: Jalan Surya Sumantri
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
-  /store:
-    get:
-      tags:
-        - Store
-      summary: Get All Store
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
-  /store/677e80a2f3fbbe5e9f752064:
-    get:
-      tags:
-        - Store
-      summary: Get Store By ID
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
-  /update/store/677e82c0f3fbbe5e9f752065:
-    put:
-      tags:
-        - Store
-      summary: Update Store
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                store_name: Mie Gacoan
-                address: Jln Surya Sumantri
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
-  /store/delete/677e80a2f3fbbe5e9f752064:
-    delete:
-      tags:
-        - Store
-      summary: Delete Store
-      responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -282,133 +287,88 @@ paths:
         - Status
       summary: Get All Status
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
-  /status/67811f31a6ffe1a1bca38c12:
+  /status/{id}:
     get:
       tags:
         - Status
       summary: Get Status By ID
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
-  /insert/status:
-    post:
-      tags:
-        - Status
-      summary: Insert Status
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                status: Accepted
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
-  /update/status/{id}:
-    put:
-      tags:
-        - Status
-      summary: Update Status
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                status: Accepted
       parameters:
         - name: id
           in: path
+          required: true
           schema:
             type: string
-          required: true
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
-  /status/delete/{id}:
-    delete:
-      tags:
-        - Status
-      summary: Delete Status
-      parameters:
-        - name: id
-          in: path
-          schema:
-            type: string
-          required: true
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
-  /users/{id}:
+  /users:
     get:
       tags:
-        - Datausers
-      summary: GET USERS BY ID
-      parameters:
-        - name: id
-          in: path
-          schema:
-            type: string
-          required: true
+        - Users
+      summary: Get All Users
       responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
-  /update/user/{id}:
-    put:
-      tags:
-        - Datausers
-      summary: Update Data Users
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                - username: ghaidafasya
-                  password: ghaida12345
-                  phone_number: '6281908915320'
-                  email: ghaida@gmail.com
-                  store:
-                    id: 677e82c0f3fbbe5e9f752065
-      parameters:
-        - name: id
-          in: path
-          schema:
-            type: string
-          required: true
-      responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
   /user/delete/{id}:
     delete:
       tags:
-        - Datausers
-      summary: Delete Datausers
+        - Users
+      summary: Delete User
       parameters:
         - name: id
           in: path
+          required: true
           schema:
             type: string
-          required: true
+      security:
+        - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
-            application/json: {} 
+            application/json: {}
+  /users/profile:
+    get:
+      tags:
+        - Profile
+      summary: Get User Profile
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json: {}
+  /update/users/profile:
+    put:
+      tags:
+        - Profile
+      summary: Update User Profile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: Ghaida Fasya Yuthika
+                username: ghai
+                phone_number: "081908915320"
+                email: ghaida12@gmail.com
+                store:
+                  store_name: Ghaida Store
+                  address: Jalan Cihanjuang No.1
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json: {}
